@@ -26,9 +26,9 @@ list.addEventListener('click', function(ev) {
     ev.target.classList.toggle('checked');
   }
 }, false);
-
+// Move task to "done category"
 var concluirTarefa = function(){
-	console.log("COncluir Tarefas");
+	console.log("Concluir Tarefas");
 	var listItem = this.parentElement;
 	var tarefasFeitas = document.getElementById("conc:"+this.parentElement.parentElement.className);
 	this.innerHTML = "Refazer";
