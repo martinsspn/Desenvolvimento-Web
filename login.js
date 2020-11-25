@@ -11,5 +11,5 @@ exports.login = function(username, password) {
             return "1";
         }
     }
-    return "Username or Password is wrong!";
+    return "2";
 }

@@ -9,6 +9,7 @@ for (i = 0; i < myNodelist.length; i++) {
   myNodelist[i].appendChild(span);
 }
 
+var username = '';
 // Click on a close button to hide the current list item
 /*var close = document.getElementsByClassName("close");
 var i;
@@ -78,7 +79,7 @@ var concluirTarefa = function(){
 	this.innerHTML = "Refazer";
 	this.onclick = desfazerTarefa;
 	tarefasFeitas.appendChild(listItem);
-  addToLocalStorage(todos)
+  //addToLocalStorage(todos)
 
 }
 
@@ -88,7 +89,7 @@ var mvAndamento = function(){
   this.innerHTML = "Concluir";
   this.onclick = concluirTarefa;
   andamento.appendChild(listItem);
-  addToLocalStorage(todos)
+  //addToLocalStorage(todos)
 }
 
 var desfazerTarefa = function (){
@@ -97,7 +98,7 @@ var desfazerTarefa = function (){
 	this.innerHTML = "Começar a fazer";
 	this.onclick = mvAndamento;
 	tarefa.appendChild(listItem);
-  addToLocalStorage(todos)
+  //addToLocalStorage(todos)
 }
 
 var closeButton = function() {
@@ -105,7 +106,7 @@ var closeButton = function() {
       var ul=listItem.parentNode;
       //Remove the parent list item from the ul.
       ul.removeChild(listItem);var listItem=this.parentNode;
-      addToLocalStorage(todos)
+      //addToLocalStorage(todos)
 };
 
 // Create a new list item when clicking on the "Add" button
@@ -140,7 +141,7 @@ var newElement = function () {
       div.style.display = "none";
     }
   }*/
-    addToLocalStorage(todos);  
+    //addToLocalStorage(todos);  
 }
 
 var newCategoria = function () {
@@ -210,8 +211,8 @@ var newCategoria = function () {
     list2: fazendo,
     list3: concluidas,
     br: br};
-  todos.push(objCategoria);
-  addToLocalStorage(todos);
+  //todos.push(objCategoria);
+  //addToLocalStorage(todos);
 };
 
 var mostrarCategoria = function () {
@@ -234,3 +235,20 @@ var esconderCategoria = function(){
   
 };
 
+var getUser = function (){
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", '/getUserName', true);
+  xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        username = this.responseText;
+      }else{
+        console.log("Erro!");
+      }
+      
+  };
+  xmlhttp.onerror = function() {
+     console.log("Erro de conexão");
+  }
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+  xmlhttp.send(str);
+};

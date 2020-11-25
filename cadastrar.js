@@ -30,6 +30,7 @@ exports.cadastrar = function (username, password) {
             fs.appendFileSync('users.json', JSON.stringify(name, null, 5));
             fs.appendFileSync('users.json', '\u002C');
             fs.appendFileSync('users.json', '\n');
+            fs.appendFileSync(__dirname + '/usersFiles/'+username+'.json', "");
         }
     }
     fs.appendFileSync('users.json', '\n');

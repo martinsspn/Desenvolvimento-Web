@@ -24,6 +24,11 @@
      "username": "katherineus123",
      "password": "katherinepw123"
 },
+"teste1":
+{
+     "username": "teste1",
+     "password": "dsa"
+},
 "teste":
 {
      "username": "teste",
@@ -32,6 +37,16 @@
 "martinsspn":
 {
      "username": "martinsspn",
-     "password": "baby2765"
+     "password": "123"
+},
+"martinsspn1":
+{
+     "username": "martinsspn1",
+     "password": "123"
+},
+"teste1":
+{
+     "username": "teste1",
+     "password": "123"
 }
 }

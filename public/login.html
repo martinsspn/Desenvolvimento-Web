@@ -18,14 +18,16 @@
         </p>
 <script>
 function login() {
-   var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value + '&' + 'operacao=login';
-   var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/", true);
+    var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "/login", true);
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("output").innerHTML = this.responseText;
+            if(this.responseText == '2')
+                document.getElementById("output").innerHTML = "Username or Password is wrong!";
+            else
+                window.location = this.responseText;
         }
-        else document.getElementById("output").innerHTML = "erro!";
     };
     xmlhttp.onerror = function() {
        console.log("Erro de conexão");
@@ -35,14 +37,16 @@ function login() {
 }
 
 function cadastrar() {
-  	var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value + '&' + 'operacao=cadastrar';
+  	var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value;
     var xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "/", true);
+    xmlhttp.open("POST", "/cadastrar", true);
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementById("output").innerHTML = this.responseText;
         }
-        else document.getElementById("output").innerHTML = "erro!";
+        else{
+        	document.getElementById("output").innerHTML = "erro!";
+        } 
     };
     xmlhttp.onerror = function() {
         console.log("Erro de conexão");
