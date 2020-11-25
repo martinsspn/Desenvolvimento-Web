@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body>
+      <h1>Login/Cadastrar</h1>
+            <li> Username: </li>
+            <input id="username" name="username" type="text" required>
+            <li>Password: </li>
+            <input id="password" name="password" type="password" required>
+            <br> 
+            <button onclick="login()">Login</button>
+            <button onclick="cadastrar()">Cadastrar</button>
+         <p><span id="output"></span></p>
+        <p>
+        <!--a href="/cadastrar">Cadastrar</a-->
+        </p>
+<script>
+function login() {
+    var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "/login", true);
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            if(this.responseText == '2')
+                document.getElementById("output").innerHTML = "Username or Password is wrong!";
+            else
+                window.location = this.responseText;
+        }
+    };
+    xmlhttp.onerror = function() {
+       console.log("Erro de conexão");
+    }
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+    xmlhttp.send(str);
+}
+
+function cadastrar() {
+  	var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "/cadastrar", true);
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("output").innerHTML = this.responseText;
+        }
+        else{
+        	document.getElementById("output").innerHTML = "erro!";
+        } 
+    };
+    xmlhttp.onerror = function() {
+        console.log("Erro de conexão");
+    }
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+    xmlhttp.send(str);  
+
+}
+
+</script>
+</body>
+</html>
