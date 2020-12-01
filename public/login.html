@@ -1,13 +1,69 @@
 <!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
+    <style>
+    * {
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .col1{
+        width: 30%;
+    }
+    body{
+        background-color: #FFE4E1;
+        padding: 10%;
+    }
+    .col2{
+        background-color: #B0E0E6;
+        display: inline-block;
+        border: 1px solid #000;
+        width: 40%;
+        text-align: center;
+    }
+    h1{
+        font-family: cursive;
+        color: #de7b35;
+    }
+    .login{
+        font-family: cursive;
+        color: #de7b35;
+        list-style-type: none;
+    }
+    .col3{
+        width:30%;
+    }
+    button {
+        margin-top: 3%;
+        background-color: #de7b35;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+    @media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    * {
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .col2{
+        align-items: left;
+        width: 100%;
+    }
+}
+</style>
+    <div class="col1"></div>
+    <div id="loginDiv" class = "col2">
       <h1>Login/Cadastrar</h1>
-            <li> Username: </li>
+            <li class = "login"> Usuário: </li>
             <input id="username" name="username" type="text" required>
-            <li>Password: </li>
+            <li class = "login"> Senha: </li>
             <input id="password" name="password" type="password" required>
             <br> 
             <button onclick="login()">Login</button>
@@ -16,6 +72,8 @@
         <p>
         <!--a href="/cadastrar">Cadastrar</a-->
         </p>
+    </div>
+    <div class="col3"></div>   
 <script>
 function login() {
     var str = 'username=' + document.getElementById("username").value + '&' + 'password=' + document.getElementById("password").value;
