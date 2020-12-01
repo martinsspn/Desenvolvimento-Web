@@ -9,7 +9,7 @@ for (i = 0; i < myNodelist.length; i++) {
   myNodelist[i].appendChild(span);
 }
 
-var username = '';
+var userList = '';
 // Click on a close button to hide the current list item
 /*var close = document.getElementsByClassName("close");
 var i;
@@ -28,18 +28,66 @@ todoForm.addEventListener('submit', function(event){
   newCategoria();
 });
 
+inicializar();
 
-function addToLocalStorage(todos) {
-  // conver the array to string then store it.
-  var fs = require('fs');
-  fs.writeFile('toDoList.json', todos, function(err){
-    if (err) throw err;
-    console.log("Arquivo Salvo");
-  });
-  localStorage.setItem('todos', JSON.stringify(todos));
-  // render them to screen
-  renderTodos(todos);
+function inicializar(){
+  console.log("inicializar");
+  getUserList();
+  if(userList != ""){
+    var teste = JSON.parse(userList);
+    console.log(teste);
+    renderTodos(teste);
+  }else{
+    console.log("Usuário ainda não tem lista!");
+  }
 }
+    
+
+function salvarServidor(x, aFazer, fazendo, feito){
+  var str = '';
+    str +='"'+x+'"'+":"+'\n';
+    str +="{\n";
+    str +='"Nome":'+'"'+x+'",'; 
+    str +='"Tarefas a fazer":[';
+    for(var i=0; i<aFazer.length; i++){
+      if(i != aFazer.length -1)
+        str += '"'+aFazer[i]+'",';
+      else
+        str += '"'+aFazer[i]+'"'; 
+    }
+    str += '],\n';
+    str +='"Tarefas em andamento":[';
+    for(var i=0; i<fazendo.length; i++){
+      if(i != fazendo.length -1)
+        str += '"'+fazendo[i]+'",';
+      else
+        str += '"'+fazendo[i]+'"'; 
+    }
+    str += '],\n';
+    str +='"Tarefas Concluídas":[';
+    for(var i=0; i<feito.length; i++){
+      if(i != feito.length -1)
+        str += '"'+feito[i]+'",';
+      else
+        str += '"'+feito[i]+'"'; 
+    }
+    str +=']\n';
+    str +='}\n';
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", '/atualizarList', true);
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        //userList = this.responseText;
+        console.log("Salvo com sucesso!!!");
+      }
+    };
+    xmlhttp.onerror = function() {
+      console.log("Erro de conexão");
+    }
+    //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+    xmlhttp.send(str);
+};
+
 
 
 function renderTodos(todos) {
@@ -202,18 +250,8 @@ var newCategoria = function () {
   button.onclick = mostrarCategoria;
   addButton.onclick = newElement;
 
-  var objCategoria = {
-    nome: inputValue,
-    button: button,
-    input: addInput,
-    addButton: addButton,
-    list1: aFazer,
-    list2: fazendo,
-    list3: concluidas,
-    br: br};
-  //todos.push(objCategoria);
-  //addToLocalStorage(todos);
-};
+  salvarServidor(inputValue, aFazer, fazendo, concluidas);
+  };
 
 var mostrarCategoria = function () {
   document.getElementById("af:"+this.innerHTML).style.display = "block";
@@ -235,20 +273,17 @@ var esconderCategoria = function(){
   
 };
 
-var getUser = function (){
+function getUserList(){
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", '/getUserName', true);
+  xmlhttp.open("GET", '/getUserList', true);
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        username = this.responseText;
-      }else{
-        console.log("Erro!");
+        userList = this.responseText;
       }
-      
   };
   xmlhttp.onerror = function() {
      console.log("Erro de conexão");
   }
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
-  xmlhttp.send(str);
+  xmlhttp.send();
 };
