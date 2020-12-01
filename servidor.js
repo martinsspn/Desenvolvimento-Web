@@ -4,6 +4,7 @@ var bodyParser= require('body-parser');
 var multer= require('multer')
 const login = require('./login.js');
 const cadastrar = require('./cadastrar.js')
+const fs = require('fs');
 var username = '';
 
 app.use(express.static('public'));
@@ -38,8 +39,11 @@ app.post('/login', function(req, res) {
     
 });
 
-app.get('/getUserName', function(req, res) {
-    res.send(username);
+app.get('/getUserList', function(req, res) {
+	var path = __dirname+'/usersFiles/'+username+'.json';
+ 	let s = fs.readFileSync(path);
+ 	console.log(s);
+    res.send(s);
 });
 
 app.post("/cadastrar", function(req, res) {
@@ -64,6 +68,64 @@ app.post("/addCategoria", function(req, res) {
 	let rawdata = fs.readFileSync('users.json');
 	console.log(req);
 	res.send("success!");
+});
+
+app.post('/atualizarList', function(req, res) {
+	let body = '';
+    req.on('data', chunk => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+    	var exist = false;
+    	body = "{\n" + body+"\n}"
+    	let elt = JSON.parse(body);
+		let todos = Object.keys(elt);
+		var name = elt[todos[0]];
+		var rawdata = fs.readFileSync(__dirname+'/usersFiles/'+username+'.json');
+    	let elt2 = JSON.parse(rawdata);
+    	let savedTodos = Object.keys(elt2);
+		fs.writeFileSync(__dirname+'/usersFiles/'+username+'.json', "{");
+    	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+   		for(var i = 0; i < savedTodos.length; i++) {
+       		var aux=elt2[savedTodos[i]];
+       		if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
+       			var t = {"Nome": name["Nome"],
+       			 		 "Tarefas a fazer": name["Tarefas a fazer"],
+       					 "Tarefas em andamento": name["Tarefas em andamento"],
+       					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
+       			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+    			exist = true;
+        	}else{
+        		var t = {"Nome": aux["Nome"],
+       			 		 "Tarefas a fazer": aux["Tarefas a fazer"],
+       					 "Tarefas em andamento": aux["Tarefas em andamento"],
+       					 "Tarefas Concluídas": aux["Tarefas Concluídas"]};
+				fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(aux["Nome"]));
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+        	}
+        	if(i < savedTodos.length-1){
+        		fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',\n');
+        	}
+        }
+        if(!exist){
+			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',');
+			var t = {"Nome": name["Nome"],
+			 		 "Tarefas a fazer": name["Tarefas a fazer"],
+   					 "Tarefas em andamento": name["Tarefas em andamento"],
+   					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
+   			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
+        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+    }
+        fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n}');      	
+	});
+	res.send("Sucess!");
 });
 
 var server = app.listen(8080, function () {
