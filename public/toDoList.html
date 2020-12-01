@@ -2,21 +2,177 @@
 <html>
 <head title="Minha Lista de Tarefas a Fazer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+	* {
+		text-align: center;
+		box-sizing: border-box;
+	}
+	h1{
+		font-family: cursive;
+		color: #de7b35;
+	}
+	h2{
+		padding-top: 3%;
+		font-family: cursive;
+		color: #de7b35;
+		font-size: 24px;
+	}
+	body{
+		background-color: #FFE4E1;
+	}
+	ul{
+		font-family: cursive;
+		list-style-type: none;
+		color: #de7b35;
+		font-size: 24px;
+		font-weight: bold;
+	}
+
+	.col1{
+		float: left;
+		width: 55%;
+	}
+	.col2{
+		float:right;
+		width: 45%;
+		font-size: 24px;
+		font-weight: bold;
+	}
+	#adicionar{
+		width: 60%;
+		block-size: 150px;
+		background-color: #B0E0E6;
+	}
+	button {
+        margin-top: 3%;
+        background-color: #de7b35;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        font-family: cursive;
+        font-weight: bold;
+    }
+    input{
+    	margin-top: 3%;
+        background-color: #FFE4B5;
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        font-family: cursive;
+    }
+    ::placeholder{
+    	color: white;
+    }
+    span{
+    	background-color: #800000;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        font-family: cursive;
+    }
+    @media only screen and (max-width: 768px){
+		* {
+        	text-align: center;
+        	box-sizing: border-box;
+    	}
+    	h2{
+    		text-align: left;
+			padding-top: 3%;
+			font-family: cursive;
+			color: #de7b35;
+			font-size: 24px;
+		}
+		.col1{
+			padding: 15%;
+			text-align: center;
+			float: top;
+			width: 100%;
+		}
+		#adicionarcategoria{
+			text-align:center;
+		}
+		#adicionar{
+			width: 100%;
+			block-size: 150px;
+			background-color: #B0E0E6;
+		}
+		.col2{
+			padding: 5%;
+			text-align: center;
+			float: bottom;
+			width: 110%;
+			font-size: 24px;
+			font-weight: bold;
+		}
+		button {
+        	margin-top: 3%;
+        	background-color: #de7b35;
+        	border: none;
+        	color: white;
+        	padding: 5px 12px;
+        	text-align: center;
+        	text-decoration: none;
+        	display: inline-block;
+        	font-size: 16px;
+        	font-family: cursive;
+        	font-weight: bold;
+    	}
+    	input{
+    		margin-top: 3%;
+        	background-color: #FFE4B5;
+        	border: none;
+       		color: white;
+        	padding: 5px 1px;
+        	text-align: center;
+        	text-decoration: none;
+        	display: inline-block;
+        	font-size: 16px;
+        	font-family: cursive;
+    	}
+    	span{
+    		background-color: #800000;
+        	border: none;
+        	color: white;
+        	padding: 5px 12px;
+        	text-align: center;
+        	text-decoration: none;
+        	display: inline-block;
+        	font-size: 16px;
+        	font-family: cursive;
+    	}
+    }
+    </style>
 </head>
 <body>
 
 <div id="myDIV" class="header">
-  <h2 style="margin:5px">Minha Lista de Tarefas a Fazer</h2>
-  <h4> Adicionar categoria </h1>
-  <form class="toDoForm">
-    <input type="text" id="myInput" placeholder="Título da categoria...">
-    <button type="submit" class="addBtn">Adicionar</button>
-  </form>
+  	<h1 style="margin:5px">Listinhas</h1>
+  	<div class = "col1">
+  		<div id = "adicionar">
+  			<h2 id="adicionarcategoria"> Adicionar categoria </h2>
+  			<form class="toDoForm">
+				<input type="text" id="myInput" placeholder="Título da categoria...">
+				<button type="submit" class="addBtn">Adicionar</button>
+  			</form>
+  		</div>
+	</div>
 </div>
 
-<ul id="categorias"> Categorias 
-
-</ul> 
+<div class = "col2">
+	<ul id="categorias"> Categorias</ul> 
+</div>
 
 <script type="text/javascript" src="toDoList.js"></script>
 </body>
