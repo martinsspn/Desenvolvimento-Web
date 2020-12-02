@@ -1,24 +1,11 @@
-// Create a "close" button and append it to each list item
 var myNodelist = document.getElementsByTagName("LI");
-var i;
-for (i = 0; i < myNodelist.length; i++) {
+for (var i = 0; i < myNodelist.length; i++) {
   var span = document.createElement("SPAN");
   var txt = document.createTextNode(" Apagar");
   span.className = "close";
   span.appendChild(txt);
   myNodelist[i].appendChild(span);
 }
-
-var userList = '';
-// Click on a close button to hide the current list item
-/*var close = document.getElementsByClassName("close");
-var i;
-for (i = 0; i < close.length; i++) {
-  close[i].onclick = function() {
-    var div = this.parentElement;
-    div.style.display = "none";
-  }
-}*/
 
 var todoForm = document.querySelector('.toDoForm');
 let todos = [];
@@ -28,22 +15,11 @@ todoForm.addEventListener('submit', function(event){
   newCategoria();
 });
 
-inicializar();
+var result = "Sucess!";
 
-function inicializar(){
-  console.log("inicializar");
-  getUserList();
-  if(userList != ""){
-    var teste = JSON.parse(userList);
-    console.log(teste);
-    renderTodos(teste);
-  }else{
-    console.log("Usuário ainda não tem lista!");
-  }
-}
-    
+window.onload = getUserList();
 
-function salvarServidor(x, aFazer, fazendo, feito){
+function salvarServidor(x, aFazer, fazendo, feito, operacao){
   var str = '';
     str +='"'+x+'"'+":"+'\n';
     str +="{\n";
@@ -73,43 +49,124 @@ function salvarServidor(x, aFazer, fazendo, feito){
     }
     str +=']\n';
     str +='}\n';
+    str +='&'+operacao;
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", '/atualizarList', true);
-    xmlhttp.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        //userList = this.responseText;
-        console.log("Salvo com sucesso!!!");
-      }
-    };
     xmlhttp.onerror = function() {
       console.log("Erro de conexão");
     }
-    //xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
     xmlhttp.send(str);
 };
 
-
-
-function renderTodos(todos) {
-  // clear everything inside <ul> with class=todo-items
-  var todoItemsList = document.getElementById("categorias");
-  todoItemsList.innerHTML = "Categorias";
-
-  // run through each item inside todos
-  //todos.forEach(function(item) {
-  todos.forEach(function(x){
-    // check if the item is completed
+function renderTodos(list) {
+  var categoria = document.getElementById("categorias");
+  let elt = JSON.parse(list);
+  let todos = Object.keys(elt);
+  var child = categoria.lastElementChild;
+  while(child){
+    categoria.removeChild(child);
+    child = categoria.lastElementChild;
+  }
+  for(var i=0; i<todos.length;i++){
+    var element = elt[todos[i]];
     var li = document.createElement("li");
-    li.appendChild(x.button);
-    li.appendChild(x.input);
-    li.appendChild(x.addButton);
-    li.appendChild(x.list1);
-    li.appendChild(x.list2);
-    li.appendChild(x.list3);
-    li.appendChild(x.br);
-    todoItemsList.append(li);
-
-  });
+    var li2 = document.createElement("li");
+    var li3 = document.createElement("li");
+    var li4 = document.createElement("li");
+    var button = document.createElement("button");
+    var addInput = document.createElement("input");
+    var addButton = document.createElement("button");
+    var br = document.createElement("br");
+    var aFazer = document.createElement("ul");
+    var fazendo = document.createElement("ul");
+    var concluidas = document.createElement("ul");
+    var aux = document.createElement("h2");
+    var aux1 = document.createElement("h2");
+    var aux2= document.createElement("h2");
+    button.innerHTML = element["Nome"];
+    addInput.type = "text";
+    addInput.placeholder = "Título da tarefa...";
+    addInput.style.display = "none";
+    addInput.id = "input:" + element["Nome"];
+    addButton.innerHTML = "Adicionar tarefa";
+    addButton.style.display = "none";
+    addButton.id = "addButton:" + element["Nome"];
+    addButton.className = element["Nome"];
+    aux.innerHTML = "Tarefas a fazer";
+    aFazer.appendChild(aux);
+    aux1.innerHTML = "Tarefas em andamento";
+    fazendo.appendChild(aux1);
+    aux2.innerHTML = "Tarefas Concluídas";
+    concluidas.appendChild(aux2);
+    for(var j=0;j<element["Tarefas a fazer"].length;j++){
+      li2 = document.createElement("li");
+      var t = document.createTextNode(element["Tarefas a fazer"][j]);
+      var feito = document.createElement("button");
+      var span = document.createElement("SPAN");
+      var txt = document.createTextNode(" Apagar ");
+      feito.innerHTML = "Começar a fazer";
+      feito.onclick = mvAndamento;
+      li2.appendChild(t);
+      span.className = "close";
+      span.appendChild(txt);
+      span.onclick = closeButton;
+      li2.appendChild(span);
+      li2.appendChild(feito);
+      aFazer.appendChild(li2);  
+    }
+    for(var j=0;j<element["Tarefas em andamento"].length;j++){
+      li3 = document.createElement("li");
+      var t = document.createTextNode(element["Tarefas em andamento"][j]);
+      var feito = document.createElement("button");
+      var span = document.createElement("SPAN");
+      var txt = document.createTextNode(" Apagar ");
+      feito.innerHTML = "Concluir";
+      feito.onclick = concluirTarefa;
+      li3.appendChild(t);
+      span.className = "close";
+      span.appendChild(txt);
+      span.onclick = closeButton;
+      li3.appendChild(span);
+      li3.appendChild(feito);
+      fazendo.appendChild(li3);  
+    }
+    for(var j=0;j<element["Tarefas Concluídas"].length;j++){
+      li4 = document.createElement("li");
+      var t = document.createTextNode(element["Tarefas Concluídas"][j]);
+      var feito = document.createElement("button");
+      var span = document.createElement("SPAN");
+      var txt = document.createTextNode(" Apagar ");
+      feito.innerHTML = "Refazer";
+      feito.onclick = desfazerTarefa;
+      li4.appendChild(t);
+      span.className = "close";
+      span.appendChild(txt);
+      span.onclick = closeButton;
+      li4.appendChild(span);
+      li4.appendChild(feito);
+      concluidas.appendChild(li4);  
+    }
+    aFazer.id = "af:" + element["Nome"];
+    aFazer.className = element["Nome"];
+    fazendo.id = "fzd:" + element["Nome"];
+    fazendo.className = element["Nome"];
+    concluidas.id = "conc:" + element["Nome"];
+    concluidas.className = element["Nome"];
+    aFazer.style.display = "none";
+    fazendo.style.display = "none";
+    concluidas.style.display = "none";
+    li.appendChild(button);
+    li.appendChild(addInput);
+    li.appendChild(addButton);
+    li.appendChild(aFazer);
+    li.appendChild(fazendo);
+    li.appendChild(concluidas);
+    li.appendChild(br);
+    categoria.appendChild(li);
+    button.onclick = mostrarCategoria;
+    addButton.onclick = newElement;
+  }
 }
 
 // Add a "checked" symbol when clicking on a list item
@@ -121,111 +178,125 @@ list.addEventListener('click', function(ev) {
 }, false);
 
 var concluirTarefa = function(){
-	console.log("COncluir Tarefas");
-	var listItem = this.parentElement;
+	console.log("Concluir Tarefas");
+	var aux = this.parentElement.innerHTML.split('<');
+  var listItem = this.parentElement;
 	var tarefasFeitas = document.getElementById("conc:"+this.parentElement.parentElement.className);
 	this.innerHTML = "Refazer";
 	this.onclick = desfazerTarefa;
 	tarefasFeitas.appendChild(listItem);
-  //addToLocalStorage(todos)
-
+  var list = [];
+  list.push(aux[0]);
+  salvarServidor(this.parentElement.parentElement.className, [], [], list, "concluir");
 }
 
 var mvAndamento = function(){
+  var aux = this.parentElement.innerHTML.split('<');
   var listItem = this.parentElement;
   var andamento = document.getElementById("fzd:"+this.parentElement.parentElement.className);
   this.innerHTML = "Concluir";
   this.onclick = concluirTarefa;
   andamento.appendChild(listItem);
-  //addToLocalStorage(todos)
-}
+  var list = [];
+  list.push(aux[0]);
+  salvarServidor(this.parentElement.parentElement.className, [], list, [], "mvAndamento");
+};
 
 var desfazerTarefa = function (){
-	var listItem = this.parentElement;
+	var aux = this.parentElement.innerHTML.split('<');
+  var listItem = this.parentElement;
 	var tarefa = document.getElementById("af:"+this.parentElement.parentElement.className);
 	this.innerHTML = "Começar a fazer";
 	this.onclick = mvAndamento;
 	tarefa.appendChild(listItem);
-  //addToLocalStorage(todos)
-}
-
-var closeButton = function() {
-      var listItem=this.parentNode;
-      var ul=listItem.parentNode;
-      //Remove the parent list item from the ul.
-      ul.removeChild(listItem);var listItem=this.parentNode;
-      //addToLocalStorage(todos)
+  var list = [];
+  list.push(aux[0]);
+  salvarServidor(this.parentElement.parentElement.className, list, [], [], "refazer");
 };
 
-// Create a new list item when clicking on the "Add" button
+var closeButton = function() {
+  var aux = this.parentElement.innerHTML.split('<');
+  var x = this.parentElement.parentElement.className;
+  var listItem=this.parentNode;
+  var ul=listItem.parentNode;
+  ul.removeChild(listItem);
+  var list = [];
+  list.push(aux[0]);
+  if(aux[3] === "button>Começar a fazer"){
+    salvarServidor(x, list, [], [], "apagar");
+  }else if(aux[3] === "button>Concluir"){
+    salvarServidor(x, [], list, [], "apagar");
+  }else{
+    salvarServidor(x, [], [], list, "apagar");
+  }
+};
+
 var newElement = function () {
-  console.log(this.className);
   var li = document.createElement("li");
   var aux = document.getElementById("input:"+this.className).value;
-  var t = document.createTextNode(this.className);
+  var t = document.createTextNode(aux);
   var feito = document.createElement("button");
+  var aFazer = [];
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode(" Apagar ");
+  document.getElementById("input:"+this.className).value = "";
   feito.innerHTML = "Começar a fazer";
   feito.onclick = mvAndamento;
   li.appendChild(t);
-  
-  if (aux === '') {
-    alert("Você deve escreve algo!");
-  } else {
-    document.getElementById("af:"+this.className).appendChild(li);
-  }
-  document.getElementById("input:"+this.className).value = "";
-
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode(" Apagar ");
   span.className = "close";
   span.appendChild(txt);
   span.onclick = closeButton;
   li.appendChild(span);
   li.appendChild(feito);
-
-  /*for (i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
-      var div = this.parentElement;
-      div.style.display = "none";
+  if (aux === '') {
+    alert("Você deve escreve algo!");
+  } else {
+    aFazer.push(aux);
+    salvarServidor(this.className, aFazer, [], [], "addElement");
+    var nodesChilds = document.getElementById("af:"+this.className).childNodes;
+    nodesChilds.forEach(function(x){
+      var y = x.innerHTML.split('<');
+      if(y[0] === aux){
+        result = "1";
+      }
+    })
+    if(result === "Sucess!"){
+      document.getElementById("af:"+this.className).appendChild(li);
+    }else if(result === "1"){
+      alert("Elemento já existente!");
     }
-  }*/
-    //addToLocalStorage(todos);  
-}
+  }
+};
 
 var newCategoria = function () {
   var categoria = document.getElementById("categorias");
   var li = document.createElement("li");
   var button = document.createElement("button");
   var inputValue = document.getElementById("myInput").value;
-  button.innerHTML = inputValue;
-
   var addInput = document.createElement("input");
+  var addButton = document.createElement("button");
+  var br = document.createElement("br");
+  var aux = document.createElement("h2");
+  var aFazer = document.createElement("ul");
+  var fazendo = document.createElement("ul");
+  var concluidas = document.createElement("ul");
+  button.innerHTML = inputValue;
   addInput.type = "text";
   addInput.placeholder = "Título da tarefa...";
   addInput.style.display = "none";
   addInput.id = "input:" + inputValue;
-  var addButton = document.createElement("button");
-  var br = document.createElement("br");
   addButton.innerHTML = "Adicionar tarefa";
   addButton.style.display = "none";
   addButton.id = "addButton:" + inputValue;
   addButton.className = inputValue;
-  var aFazer = document.createElement("ul");
-  var aux = document.createElement("h2");
   aux.innerHTML = "Tarefas a fazer:";
   aFazer.appendChild(aux);
   aFazer.id = "af:" + inputValue;
   aFazer.className = inputValue;
-
-  var fazendo = document.createElement("ul");
-  var aux = document.createElement("h2");
   aux.innerHTML = "Tarefas em andamento:";
   fazendo.appendChild(aux);
   fazendo.id = "fzd:" + inputValue;
   fazendo.className = inputValue;
-
-  var concluidas = document.createElement("ul");
-  var aux = document.createElement("h2");
   aux.innerHTML = "Tarefas concluidas:";
   concluidas.appendChild(aux);
   concluidas.id = "conc:" + inputValue;
@@ -233,25 +304,26 @@ var newCategoria = function () {
   aFazer.style.display = "none";
   fazendo.style.display = "none";
   concluidas.style.display = "none";
-  
   if (inputValue === "") {
     alert("Você deve escrever algo!");
   } else {
-    li.appendChild(button);
-    li.appendChild(addInput);
-    li.appendChild(addButton);
-    li.appendChild(aFazer);
-    li.appendChild(fazendo);
-    li.appendChild(concluidas);
-    li.appendChild(br);
-    categoria.appendChild(li);
+    if(salvarServidor(inputValue, [], [], [], "addCategoria") === "0"){
+      li.appendChild(button);
+      li.appendChild(addInput);
+      li.appendChild(addButton);
+      li.appendChild(aFazer);
+      li.appendChild(fazendo);
+      li.appendChild(concluidas);
+      li.appendChild(br);
+      categoria.appendChild(li);
+    }else{
+      alert("Categoria já existe!!!");
+    }
   }
   document.getElementById("myInput"). value = "";
   button.onclick = mostrarCategoria;
   addButton.onclick = newElement;
-
-  salvarServidor(inputValue, aFazer, fazendo, concluidas);
-  };
+};
 
 var mostrarCategoria = function () {
   document.getElementById("af:"+this.innerHTML).style.display = "block";
@@ -260,7 +332,6 @@ var mostrarCategoria = function () {
   document.getElementById("input:"+this.innerHTML).style.display = "block";
   document.getElementById("addButton:"+this.innerHTML).style.display = "block";
   this.onclick = esconderCategoria;
-  
 };
 
 var esconderCategoria = function(){
@@ -270,7 +341,6 @@ var esconderCategoria = function(){
   document.getElementById("input:"+this.innerHTML).style.display = "none";
   document.getElementById("addButton:"+this.innerHTML).style.display = "none";
   this.onclick = mostrarCategoria;
-  
 };
 
 function getUserList(){
@@ -278,7 +348,9 @@ function getUserList(){
   xmlhttp.open("GET", '/getUserList', true);
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        userList = this.responseText;
+        //userList = this.responseText;
+        var x = this.responseText;
+        renderTodos(x.toString());
       }
   };
   xmlhttp.onerror = function() {

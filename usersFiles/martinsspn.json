@@ -1,21 +1,27 @@
 {
-"teste":
+"Trabalho":
 {
-     "Nome": "teste",
+     "Nome": "Trabalho",
+     "Tarefas a fazer": [
+          "3",
+          "33",
+          "2",
+          "1",
+          "5"
+     ],
+     "Tarefas em andamento": [],
+     "Tarefas Concluídas": []
+},
+"New Category":
+{
+     "Nome": "New Category",
      "Tarefas a fazer": [],
      "Tarefas em andamento": [],
      "Tarefas Concluídas": []
 },
-"dasd":
+"ola":
 {
-     "Nome": "dasd",
-     "Tarefas a fazer": [],
-     "Tarefas em andamento": [],
-     "Tarefas Concluídas": []
-},
-"dasdsa":
-{
-     "Nome": "dasdsa",
+     "Nome": "ola",
      "Tarefas a fazer": [],
      "Tarefas em andamento": [],
      "Tarefas Concluídas": []
