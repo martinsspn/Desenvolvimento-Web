@@ -108,6 +108,14 @@ function renderTodos(list) {
     var aux2= document.createElement("h2");
     var spanCat = document.createElement("SPAN");
     var txtSpan = document.createTextNode(" x ");
+    var aux3 = document.createElement("h4");
+    var prazo = document.createElement("input");
+    aux3.innerHTML = "Prazo de conclusão:";
+    aux3.style.display = "none";
+    aux3.id='h4:'+element["Nome"];
+    prazo.type = "date";
+    prazo.style.display = "none";
+    prazo.id = "prazo:"+element["Nome"];
     spanCat.className = element["Nome"];
     spanCat.appendChild(txtSpan);
     spanCat.onclick = closeCatButton;
@@ -186,6 +194,8 @@ function renderTodos(list) {
     li.appendChild(button);
     li.appendChild(spanCat);
     li.appendChild(addInput);
+    li.appendChild(aux3);
+    li.appendChild(prazo);
     li.appendChild(addButton);
     li.appendChild(aFazer);
     li.appendChild(fazendo);
@@ -266,12 +276,14 @@ var closeCatButton = function() {
 var newElement = function () {
   var li = document.createElement("li");
   var aux = document.getElementById("input:"+this.className).value;
-  var t = document.createTextNode(aux);
+  var aux2 = document.getElementById("prazo:"+this.className).value;
+  var t = document.createTextNode(aux+"\nPrazo de conclusão: "+aux2);
   var feito = document.createElement("button");
   var aFazer = [];
   var span = document.createElement("SPAN");
   var txt = document.createTextNode(" Apagar ");
   document.getElementById("input:"+this.className).value = "";
+  document.getElementById("prazo:"+this.className).value = "";
   feito.innerHTML = "Começar a fazer";
   feito.onclick = mvAndamento;
   li.appendChild(t);
@@ -282,8 +294,10 @@ var newElement = function () {
   li.appendChild(feito);
   if (aux === '') {
     alert("Você deve escreve algo!");
-  } else {
-    aFazer.push(aux);
+  }else if(aux2 === ''){
+    alert("Informe o prazo de entrega!");
+  }else {
+    aFazer.push(aux +"\nPrazo de conclusão: "+aux2);
     salvarServidor(this.className, aFazer, [], [], "addElement");
     var nodesChilds = document.getElementById("af:"+this.className).childNodes;
     nodesChilds.forEach(function(x){
@@ -326,9 +340,17 @@ var newCategoria = function () {
   var aux = document.createElement("h2");
   var aux2 = document.createElement("h2");
   var aux3 = document.createElement("h2");
+  var aux4 = document.createElement("h4");
   var aFazer = document.createElement("ul");
   var fazendo = document.createElement("ul");
   var concluidas = document.createElement("ul");
+  var prazo = document.createElement("input");
+  aux4.innerHTML = "Prazo de conclusão:";
+  aux4.style.display = "none";
+  aux4.id='h4:'+inputValue;
+  prazo.type = "date";
+  prazo.style.display = "none";
+  prazo.id = "prazo:"+inputValue;
   span.className = inputValue;
   span.appendChild(txt);
   span.onclick = closeCatButton;
@@ -363,6 +385,8 @@ var newCategoria = function () {
     li.appendChild(button);
     li.appendChild(span);
     li.appendChild(addInput);
+    li.appendChild(aux4);
+    li.appendChild(prazo);
     li.appendChild(addButton);
     li.appendChild(aFazer);
     li.appendChild(fazendo);
@@ -381,6 +405,8 @@ var mostrarCategoria = function () {
   document.getElementById("conc:"+this.innerHTML).style.display = "block";
   document.getElementById("input:"+this.innerHTML).style.display = "block";
   document.getElementById("addButton:"+this.innerHTML).style.display = "block";
+  document.getElementById("prazo:"+this.innerHTML).style.display = "block";
+  document.getElementById("h4:"+this.innerHTML).style.display = "block";
   this.onclick = esconderCategoria;
 };
 
@@ -390,6 +416,8 @@ var esconderCategoria = function(){
   document.getElementById("conc:"+this.innerHTML).style.display = "none";
   document.getElementById("input:"+this.innerHTML).style.display = "none";
   document.getElementById("addButton:"+this.innerHTML).style.display = "none";
+  document.getElementById("prazo:"+this.innerHTML).style.display = "none";
+  document.getElementById("h4:"+this.innerHTML).style.display = "none";
   this.onclick = mostrarCategoria;
 };
 
