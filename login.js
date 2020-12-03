@@ -1,6 +1,10 @@
 const fs = require('fs');
 
-exports.login = function(username, password) {
+/*função para fazer o login no servidor
+    abre o arquivo users.json e verifica se o usuário
+    consta no arquivo, retorna "1" se encontrou o usuário
+    e retorna "2" não encontrou*/
+exports.login = function(username, password) { 
     let rawdata = fs.readFileSync('users.json');
     let creds = JSON.parse(rawdata);
     let users = Object.keys(creds);
