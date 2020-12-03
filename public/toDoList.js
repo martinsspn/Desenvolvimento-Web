@@ -277,7 +277,7 @@ var newElement = function () {
   var li = document.createElement("li");
   var aux = document.getElementById("input:"+this.className).value;
   var aux2 = document.getElementById("prazo:"+this.className).value;
-  var t = document.createTextNode(aux+"\nPrazo de conclusão: "+aux2);
+  var t = document.createTextNode(aux+" Prazo de conclusão: "+aux2);
   var feito = document.createElement("button");
   var aFazer = [];
   var span = document.createElement("SPAN");
@@ -297,7 +297,7 @@ var newElement = function () {
   }else if(aux2 === ''){
     alert("Informe o prazo de entrega!");
   }else {
-    aFazer.push(aux +"\nPrazo de conclusão: "+aux2);
+    aFazer.push(aux +" Prazo de conclusão: "+aux2);
     salvarServidor(this.className, aFazer, [], [], "addElement");
     var nodesChilds = document.getElementById("af:"+this.className).childNodes;
     nodesChilds.forEach(function(x){
