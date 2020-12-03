@@ -8,16 +8,38 @@ for (var i = 0; i < myNodelist.length; i++) {
 }
 
 var todoForm = document.querySelector('.toDoForm');
-let todos = [];
+//let todos = [];
 
 todoForm.addEventListener('submit', function(event){
   event.preventDefault();
   newCategoria();
 });
 
-var result = "Sucess!";
+var sairForm = document.querySelector('.sair');
+sairForm.addEventListener('submit', function(event){
+  event.preventDefault();
+  sair();
+});
 
 window.onload = getUserList();
+
+function sair(){
+  console.log("s");
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("GET", '/sair', true);
+  xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        window.location = this.responseText;
+      }
+  };
+  xmlhttp.onerror = function() {
+     console.log("Erro de conexão");
+  }
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  
+  xmlhttp.send();
+}
+
+var result = "Sucess!";
 
 function salvarServidor(x, aFazer, fazendo, feito, operacao){
   var str = '';
@@ -84,6 +106,11 @@ function renderTodos(list) {
     var aux = document.createElement("h2");
     var aux1 = document.createElement("h2");
     var aux2= document.createElement("h2");
+    var spanCat = document.createElement("SPAN");
+    var txtSpan = document.createTextNode(" x ");
+    spanCat.className = element["Nome"];
+    spanCat.appendChild(txtSpan);
+    spanCat.onclick = closeCatButton;
     button.innerHTML = element["Nome"];
     addInput.type = "text";
     addInput.placeholder = "Título da tarefa...";
@@ -157,6 +184,7 @@ function renderTodos(list) {
     fazendo.style.display = "none";
     concluidas.style.display = "none";
     li.appendChild(button);
+    li.appendChild(spanCat);
     li.appendChild(addInput);
     li.appendChild(addButton);
     li.appendChild(aFazer);
@@ -169,7 +197,6 @@ function renderTodos(list) {
   }
 }
 
-// Add a "checked" symbol when clicking on a list item
 var list = document.querySelector('ul');
 list.addEventListener('click', function(ev) {
   if (ev.target.tagName === 'LI') {
@@ -231,6 +258,11 @@ var closeButton = function() {
   }
 };
 
+var closeCatButton = function() {
+  document.getElementById("categorias").removeChild(this.parentElement);    
+  salvarServidor(this.className, [], [], [], "removerCategoria");
+};
+
 var newElement = function () {
   var li = document.createElement("li");
   var aux = document.getElementById("input:"+this.className).value;
@@ -270,16 +302,36 @@ var newElement = function () {
 
 var newCategoria = function () {
   var categoria = document.getElementById("categorias");
+  var nodesChilds = categoria.childNodes;
+  var inputValue = document.getElementById("myInput").value;
+  var exist = false;
+  nodesChilds.forEach(function(x){
+    if(x.firstChild != null){
+      if(inputValue === x.firstChild.innerHTML){
+          alert("Categoria já existe!!!");
+          exist = true;
+      }
+    }
+  });
+  if(exist){
+    return -1;
+  }
+  var span = document.createElement("SPAN");
+  var txt = document.createTextNode(" x ");
   var li = document.createElement("li");
   var button = document.createElement("button");
-  var inputValue = document.getElementById("myInput").value;
   var addInput = document.createElement("input");
   var addButton = document.createElement("button");
   var br = document.createElement("br");
   var aux = document.createElement("h2");
+  var aux2 = document.createElement("h2");
+  var aux3 = document.createElement("h2");
   var aFazer = document.createElement("ul");
   var fazendo = document.createElement("ul");
   var concluidas = document.createElement("ul");
+  span.className = inputValue;
+  span.appendChild(txt);
+  span.onclick = closeCatButton;
   button.innerHTML = inputValue;
   addInput.type = "text";
   addInput.placeholder = "Título da tarefa...";
@@ -293,12 +345,12 @@ var newCategoria = function () {
   aFazer.appendChild(aux);
   aFazer.id = "af:" + inputValue;
   aFazer.className = inputValue;
-  aux.innerHTML = "Tarefas em andamento:";
-  fazendo.appendChild(aux);
+  aux2.innerHTML = "Tarefas em andamento:";
+  fazendo.appendChild(aux2);
   fazendo.id = "fzd:" + inputValue;
   fazendo.className = inputValue;
-  aux.innerHTML = "Tarefas concluidas:";
-  concluidas.appendChild(aux);
+  aux3.innerHTML = "Tarefas concluidas:";
+  concluidas.appendChild(aux3);
   concluidas.id = "conc:" + inputValue;
   concluidas.className = inputValue;
   aFazer.style.display = "none";
@@ -307,18 +359,16 @@ var newCategoria = function () {
   if (inputValue === "") {
     alert("Você deve escrever algo!");
   } else {
-    if(salvarServidor(inputValue, [], [], [], "addCategoria") === "0"){
-      li.appendChild(button);
-      li.appendChild(addInput);
-      li.appendChild(addButton);
-      li.appendChild(aFazer);
-      li.appendChild(fazendo);
-      li.appendChild(concluidas);
-      li.appendChild(br);
-      categoria.appendChild(li);
-    }else{
-      alert("Categoria já existe!!!");
-    }
+    salvarServidor(inputValue, [], [], [], "addCategoria")
+    li.appendChild(button);
+    li.appendChild(span);
+    li.appendChild(addInput);
+    li.appendChild(addButton);
+    li.appendChild(aFazer);
+    li.appendChild(fazendo);
+    li.appendChild(concluidas);
+    li.appendChild(br);
+    categoria.appendChild(li);
   }
   document.getElementById("myInput"). value = "";
   button.onclick = mostrarCategoria;
