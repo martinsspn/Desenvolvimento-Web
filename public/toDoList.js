@@ -1,35 +1,26 @@
-var myNodelist = document.getElementsByTagName("LI");
-for (var i = 0; i < myNodelist.length; i++) {
-  var span = document.createElement("SPAN");
-  var txt = document.createTextNode(" Apagar");
-  span.className = "close";
-  span.appendChild(txt);
-  myNodelist[i].appendChild(span);
-}
-
+//colocando o método newCategoria() para o botão adicionar categoria do arquivo toDoList.html
 var todoForm = document.querySelector('.toDoForm');
-//let todos = [];
-
 todoForm.addEventListener('submit', function(event){
   event.preventDefault();
   newCategoria();
 });
 
+//colocando o método sair() para o botão sair do arquivo toDoList.html
 var sairForm = document.querySelector('.sair');
 sairForm.addEventListener('submit', function(event){
   event.preventDefault();
   sair();
 });
 
-window.onload = getUserList();
+window.onload = getUserList(); //carrega a lista do arquivo do usuário ao iniciar a página
 
-function sair(){
+function sair(){ //método AJAX para fazer logout
   console.log("s");
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", '/sair', true);
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
-        window.location = this.responseText;
+        window.location = this.responseText; //volta para a página de login
       }
   };
   xmlhttp.onerror = function() {
@@ -39,10 +30,10 @@ function sair(){
   xmlhttp.send();
 }
 
-var result = "Sucess!";
+var result = "Sucess!"; //variavel usada para fazer alguns controles
 
-function salvarServidor(x, aFazer, fazendo, feito, operacao){
-  var str = '';
+function salvarServidor(x, aFazer, fazendo, feito, operacao){ //função que envia uma atualização para o servidor para ser salvo no arquivo do usuário
+  var str = ''; //variável usada para fazer a lista a ser salva em formato JSON
     str +='"'+x+'"'+":"+'\n';
     str +="{\n";
     str +='"Nome":'+'"'+x+'",'; 
@@ -71,7 +62,7 @@ function salvarServidor(x, aFazer, fazendo, feito, operacao){
     }
     str +=']\n';
     str +='}\n';
-    str +='&'+operacao;
+    str +='&'+operacao;//operação será usado para controle no servidor
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", '/atualizarList', true);
     xmlhttp.onerror = function() {
@@ -81,16 +72,19 @@ function salvarServidor(x, aFazer, fazendo, feito, operacao){
     xmlhttp.send(str);
 };
 
-function renderTodos(list) {
+function renderTodos(list) { //função usada para converter uma lista em json para uma lista html e colocar na página
   var categoria = document.getElementById("categorias");
   let elt = JSON.parse(list);
   let todos = Object.keys(elt);
   var child = categoria.lastElementChild;
-  while(child){
+  while(child){ //função usada para remover todos os elementos da lista "categorias"
     categoria.removeChild(child);
     child = categoria.lastElementChild;
   }
-  for(var i=0; i<todos.length;i++){
+  /*	O for a seguir percorre a list "todos" que contém cada categoria salva e todos seus elementos
+  	e para cada catégoria cria os elementos html e atribui corretamente conforme o arquivo JSON de cada cliente
+  */
+  for(var i=0; i<todos.length;i++){ 
     var element = elt[todos[i]];
     var li = document.createElement("li");
     var li2 = document.createElement("li");
@@ -134,7 +128,7 @@ function renderTodos(list) {
     fazendo.appendChild(aux1);
     aux2.innerHTML = "Tarefas Concluídas";
     concluidas.appendChild(aux2);
-    for(var j=0;j<element["Tarefas a fazer"].length;j++){
+    for(var j=0;j<element["Tarefas a fazer"].length;j++){ //for para percorrer a lista de tarefas a fazer do usuario salvo no arquivo JSON
       li2 = document.createElement("li");
       var t = document.createTextNode(element["Tarefas a fazer"][j]);
       var feito = document.createElement("button");
@@ -150,7 +144,7 @@ function renderTodos(list) {
       li2.appendChild(feito);
       aFazer.appendChild(li2);  
     }
-    for(var j=0;j<element["Tarefas em andamento"].length;j++){
+    for(var j=0;j<element["Tarefas em andamento"].length;j++){//for para percorrer a lista de tarefas em andamento do usuario salvo no arquivo JSON
       li3 = document.createElement("li");
       var t = document.createTextNode(element["Tarefas em andamento"][j]);
       var feito = document.createElement("button");
@@ -166,7 +160,7 @@ function renderTodos(list) {
       li3.appendChild(feito);
       fazendo.appendChild(li3);  
     }
-    for(var j=0;j<element["Tarefas Concluídas"].length;j++){
+    for(var j=0;j<element["Tarefas Concluídas"].length;j++){ //for para percorrer a lista de tarefas Concluídas do usuario salvo no arquivo JSON
       li4 = document.createElement("li");
       var t = document.createTextNode(element["Tarefas Concluídas"][j]);
       var feito = document.createElement("button");
@@ -207,27 +201,19 @@ function renderTodos(list) {
   }
 }
 
-var list = document.querySelector('ul');
-list.addEventListener('click', function(ev) {
-  if (ev.target.tagName === 'LI') {
-    ev.target.classList.toggle('checked');
-  }
-}, false);
-
-var concluirTarefa = function(){
-	console.log("Concluir Tarefas");
-	var aux = this.parentElement.innerHTML.split('<');
+var concluirTarefa = function(){ //função que move o elemento da lista de tarefas em andamento para a lista de tarefas Concluídas
+  var aux = this.parentElement.innerHTML.split('<');
   var listItem = this.parentElement;
-	var tarefasFeitas = document.getElementById("conc:"+this.parentElement.parentElement.className);
-	this.innerHTML = "Refazer";
-	this.onclick = desfazerTarefa;
-	tarefasFeitas.appendChild(listItem);
+  var tarefasFeitas = document.getElementById("conc:"+this.parentElement.parentElement.className);
+  this.innerHTML = "Refazer";
+  this.onclick = desfazerTarefa;
+  tarefasFeitas.appendChild(listItem);
   var list = [];
   list.push(aux[0]);
-  salvarServidor(this.parentElement.parentElement.className, [], [], list, "concluir");
+  salvarServidor(this.parentElement.parentElement.className, [], [], list, "concluir"); //chama a função de salvar no servidor toda vez que move
 }
 
-var mvAndamento = function(){
+var mvAndamento = function(){  //função que move o elemento da lista de tarefas a fazer para a lista de tarefas em andamento
   var aux = this.parentElement.innerHTML.split('<');
   var listItem = this.parentElement;
   var andamento = document.getElementById("fzd:"+this.parentElement.parentElement.className);
@@ -236,10 +222,10 @@ var mvAndamento = function(){
   andamento.appendChild(listItem);
   var list = [];
   list.push(aux[0]);
-  salvarServidor(this.parentElement.parentElement.className, [], list, [], "mvAndamento");
+  salvarServidor(this.parentElement.parentElement.className, [], list, [], "mvAndamento"); //chama a função de salvar no servidor toda vez que move
 };
 
-var desfazerTarefa = function (){
+var desfazerTarefa = function (){ //função que move o elemento da lista de tarefas Concluídas para a lista de tarefas a fazer
 	var aux = this.parentElement.innerHTML.split('<');
   var listItem = this.parentElement;
 	var tarefa = document.getElementById("af:"+this.parentElement.parentElement.className);
@@ -248,10 +234,10 @@ var desfazerTarefa = function (){
 	tarefa.appendChild(listItem);
   var list = [];
   list.push(aux[0]);
-  salvarServidor(this.parentElement.parentElement.className, list, [], [], "refazer");
+  salvarServidor(this.parentElement.parentElement.className, list, [], [], "refazer"); //chama a função de salvar no servidor toda vez que move
 };
 
-var closeButton = function() {
+var closeButton = function() { //função que elimina o respectivo elemento da lista
   var aux = this.parentElement.innerHTML.split('<');
   var x = this.parentElement.parentElement.className;
   var listItem=this.parentNode;
@@ -259,21 +245,21 @@ var closeButton = function() {
   ul.removeChild(listItem);
   var list = [];
   list.push(aux[0]);
-  if(aux[3] === "button>Começar a fazer"){
+  if(aux[3] === "button>Começar a fazer"){ //if para saber em qual lista de tarefas o elemento está(a fazer/fazendo/concluídas)
     salvarServidor(x, list, [], [], "apagar");
   }else if(aux[3] === "button>Concluir"){
     salvarServidor(x, [], list, [], "apagar");
   }else{
     salvarServidor(x, [], [], list, "apagar");
-  }
+  } //salva no servidor sempre que exclui
 };
 
-var closeCatButton = function() {
+var closeCatButton = function() { //função que elimina a respectiva categoria (com tudo que contém na categória)
   document.getElementById("categorias").removeChild(this.parentElement);    
   salvarServidor(this.className, [], [], [], "removerCategoria");
 };
 
-var newElement = function () {
+var newElement = function () { //cria um novo elemento e adiciona na lista e envia para ser salvo no servidor
   var li = document.createElement("li");
   var aux = document.getElementById("input:"+this.className).value;
   var aux2 = document.getElementById("prazo:"+this.className).value;
@@ -314,8 +300,8 @@ var newElement = function () {
   }
 };
 
-var newCategoria = function () {
-  var categoria = document.getElementById("categorias");
+var newCategoria = function () { 				//cria uma nova catégoria e salva no servidor, faz basicamente a mesma coisa que a função renderTodos
+  var categoria = document.getElementById("categorias");	//porém não pega as informações do servidor e sim do input do usuário
   var nodesChilds = categoria.childNodes;
   var inputValue = document.getElementById("myInput").value;
   var exist = false;
@@ -399,7 +385,7 @@ var newCategoria = function () {
   addButton.onclick = newElement;
 };
 
-var mostrarCategoria = function () {
+var mostrarCategoria = function () { //função para deixar tudo da categoria visível
   document.getElementById("af:"+this.innerHTML).style.display = "block";
   document.getElementById("fzd:"+this.innerHTML).style.display = "block";
   document.getElementById("conc:"+this.innerHTML).style.display = "block";
@@ -410,7 +396,7 @@ var mostrarCategoria = function () {
   this.onclick = esconderCategoria;
 };
 
-var esconderCategoria = function(){
+var esconderCategoria = function(){ //função para deixar tudo da categoria invisível
   document.getElementById("af:"+this.innerHTML).style.display = "none";
   document.getElementById("fzd:"+this.innerHTML).style.display = "none";
   document.getElementById("conc:"+this.innerHTML).style.display = "none";
@@ -421,14 +407,14 @@ var esconderCategoria = function(){
   this.onclick = mostrarCategoria;
 };
 
-function getUserList(){
+function getUserList(){ //função para pegar a lista do usuário no servidor
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.open("GET", '/getUserList', true);
   xmlhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
         //userList = this.responseText;
         var x = this.responseText;
-        renderTodos(x.toString());
+        renderTodos(x.toString()); //chama a função renderTodos para renderizar a lista que foi enviada pelo servidor
       }
   };
   xmlhttp.onerror = function() {
