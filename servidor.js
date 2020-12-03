@@ -9,11 +9,11 @@ var username = '';
 
 app.use(express.static('public'));
 
-app.get('/', function (req, res) {
+app.get('/', function (req, res) { //retorna para o clinte o arquivo da página inicial login.html
 	res.sendFile(__dirname + '/public/' + 'login.html');
 });
 
-app.get('/toDoList', function(req, res) {
+app.get('/toDoList', function(req, res) { //retorna para o cliente o arquivo toDoList.html se username != '', caso contrário retorna a página inicial de login
 	if(username === ''){
 		res.sendFile(__dirname + '/public/'+'login.html');
 	}else{
@@ -21,12 +21,12 @@ app.get('/toDoList', function(req, res) {
 	}
 });
 
-app.get('/sair', function(req, res) {
+app.get('/sair', function(req, res) { //método para fazer o logoff do usuário
 	username = '';
 	res.send('/');
 });
 
-app.post('/login', function(req, res) {
+app.post('/login', function(req, res) { //método para fazer o login do usuário
 	let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
@@ -48,13 +48,13 @@ app.post('/login', function(req, res) {
     
 });
 
-app.get('/getUserList', function(req, res) {
+app.get('/getUserList', function(req, res) { //retorna o arquivo da lista do usuário que está localizado na pasta usersFiles
 	var path = __dirname+'/usersFiles/'+username+'.json';
  	let s = fs.readFileSync(path);
     res.send(s);
 });
 
-app.post('/addCategoria', function(req, res) {
+app.post('/addCategoria', function(req, res) { //método para adicionar uma nova catégoria no arquivo do usuário
 	let body = '';
 	req.on('data', chunk => {
         body += chunk.toString();
@@ -93,7 +93,7 @@ app.post('/addCategoria', function(req, res) {
 
 });
 
-app.post("/cadastrar", function(req, res) {
+app.post("/cadastrar", function(req, res) { //método para cadastrar novo usuário
 	let body = '';
     req.on('data', chunk => {
         body += chunk.toString();
@@ -111,8 +111,8 @@ app.post("/cadastrar", function(req, res) {
     });
 });
 
-app.post('/atualizarList', function(req, res) {
-	let body = '';
+app.post('/atualizarList', function(req, res) { //método para salvar qualquer alteração da lista do usuário
+	let body = '';				//este método basicamente é puro manipulação de JSON
     req.on('data', chunk => {
         body += chunk.toString();
     });
