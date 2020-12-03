@@ -3,47 +3,65 @@
 <head title="Minha Lista de Tarefas a Fazer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-	* {
-		text-align: center;
-		box-sizing: border-box;
-	}
-	h1{
-		font-family: cursive;
-		color: #de7b35;
-	}
-	h2{
-		padding-top: 3%;
-		font-family: cursive;
-		color: #de7b35;
-		font-size: 24px;
-	}
-	body{
-		background-color: #FFE4E1;
-	}
-	ul{
-		font-family: cursive;
-		list-style-type: none;
-		color: #de7b35;
-		font-size: 24px;
-		font-weight: bold;
-	}
+    * {
+        text-align: center;
+        box-sizing: border-box;
+    }
+    h1{
+        font-family: cursive;
+        color: #de7b35;
+    }
+    h2{
+        padding-top: 3%;
+        font-family: cursive;
+        color: #de7b35;
+        font-size: 26px;
+    }
+    h4{
+            text-align: left;
+            padding-top: 3%;
+            font-family: cursive;
+            color: #de7b35;
+            font-size: 16px;
+        }
+    body{
+        background-color: #FFE4E1;
+    }
+    ul{
+        font-family: cursive;
+        list-style-type: none;
+        color: #de7b35;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #categorias{
+            text-align: center;
+            padding-top: 3%;
+            font-family: cursive;
+            color: #de7b35;
+            font-size: 26px;
+    }
+    .col1{
+           float: top;
+            width: 7%; 
+        }
+    .col2{
+        float: left;
+        width: 55%;
 
-	.col1{
-		float: left;
-		width: 55%;
-	}
-	.col2{
-		float:right;
-		width: 45%;
-		font-size: 24px;
-		font-weight: bold;
-	}
-	#adicionar{
-		width: 60%;
-		block-size: 150px;
-		background-color: #B0E0E6;
-	}
-	button {
+    }
+    .col3{
+        float:right;
+        width: 45%;
+        font-size: 26px;
+        font-weight: bold;
+    }
+    #adicionar{
+        width: 60%;
+        block-size: 150px;
+        background-color: #B0E0E6;
+    }
+    button {
         margin-top: 3%;
         background-color: #de7b35;
         border: none;
@@ -57,7 +75,7 @@
         font-weight: bold;
     }
     input{
-    	margin-top: 3%;
+        margin-top: 3%;
         background-color: #FFE4B5;
         border: none;
         color: white;
@@ -69,10 +87,10 @@
         font-family: cursive;
     }
     ::placeholder{
-    	color: white;
+        color: white;
     }
     span{
-    	background-color: #800000;
+        background-color: #800000;
         border: none;
         color: white;
         padding: 10px 25px;
@@ -83,101 +101,112 @@
         font-family: cursive;
     }
     @media only screen and (max-width: 768px){
-		* {
-        	text-align: center;
-        	box-sizing: border-box;
-    	}
-    	h2{
-    		text-align: left;
-			padding-top: 3%;
-			font-family: cursive;
-			color: #de7b35;
-			font-size: 24px;
-		}
-		.col1{
-			padding: 15%;
-			text-align: center;
-			float: top;
-			width: 100%;
-		}
-		#adicionarcategoria{
-			text-align:center;
-		}
-		#adicionar{
-			width: 100%;
-			block-size: 150px;
-			background-color: #B0E0E6;
-		}
-		.col2{
-			padding: 5%;
-			text-align: center;
-			float: bottom;
-			width: 110%;
-			font-size: 24px;
-			font-weight: bold;
-		}
-		button {
-        	margin-top: 3%;
-        	background-color: #de7b35;
-        	border: none;
-        	color: white;
-        	padding: 5px 12px;
-        	text-align: center;
-        	text-decoration: none;
-        	display: inline-block;
-        	font-size: 16px;
-        	font-family: cursive;
-        	font-weight: bold;
-    	}
-    	input{
-    		margin-top: 3%;
-        	background-color: #FFE4B5;
-        	border: none;
-       		color: white;
-        	padding: 5px 1px;
-        	text-align: center;
-        	text-decoration: none;
-        	display: inline-block;
-        	font-size: 16px;
-        	font-family: cursive;
-    	}
-    	span{
-    		background-color: #800000;
-        	border: none;
-        	color: white;
-        	padding: 5px 12px;
-        	text-align: center;
-        	text-decoration: none;
-        	display: inline-block;
-        	font-size: 16px;
-        	font-family: cursive;
-    	}
+        * {
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h2{
+            text-align: left;
+            padding-top: 3%;
+            font-family: cursive;
+            color: #de7b35;
+            font-size: 26px;
+        }
+        h4{
+            text-align: left;
+            padding-top: 3%;
+            font-family: cursive;
+            color: #de7b35;
+            font-size: 14px;
+        }
+        .col1{
+            width: 7%; 
+        }
+        .col2{
+            padding: 15%;
+            text-align: center;
+            float: top;
+            width: 100%;
+        }
+        #adicionarcategoria{
+            text-align:center;
+        }
+        #adicionar{
+            width: 100%;
+            block-size: 150px;
+            background-color: #B0E0E6;
+        }
+        .col3{
+            padding: 5%;
+            text-align: center;
+            float: bottom;
+            width: 110%;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 3%;
+            background-color: #de7b35;
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-family: cursive;
+            font-weight: bold;
+        }
+        input{
+            margin-top: 3%;
+            background-color: #FFE4B5;
+            border: none;
+            color: white;
+            padding: 5px 1px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-family: cursive;
+        }
+        span{
+            background-color: #800000;
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-family: cursive;
+        }
     }
     </style>
 </head>
 <body>
 
 <div id="myDIV" class="header">
-  	<h1 style="margin:5px">Listinhas</h1>
-  	<div class = "col1">
-  		<div id = "adicionar">
-  			<h2 id="adicionarcategoria"> Adicionar categoria </h2>
-  			<form class="toDoForm">
-				<input type="text" id="myInput" placeholder="Título da categoria...">
-				<button type="submit" class="addBtn">Adicionar</button>
-  			</form>
-  		</div>
-	</div>
+    <h1 style="margin:5px">Listinhas</h1>
+    <div class = "col2">
+        <div id = "adicionar">
+            <h2 id="adicionarcategoria"> Adicionar categoria </h2>
+            <form class="toDoForm">
+                <input type="text" id="myInput" placeholder="Título da categoria...">
+                <button type="submit" class="addBtn">Adicionar</button>
+            </form>
+        </div>
+    </div>
 </div>
 
-<div class = "col2">
-	<ul id="categorias"> Categorias</ul> 
+<div class = "col3">
+    <ul id="categorias"> Categorias</ul> 
 </div>
 
-<div id="myDIV2" class="header">
-	<form class="sair">
-		<button type="submit" class="sairBtn">Sair</button>
-	</form>
+<div id="myDIV2" class="col1">
+    <form class="sair">
+        <button type="submit" class="sairBtn">Sair</button>
+    </form>
 </div>
 <script type="text/javascript" src="toDoList.js"></script>
 </body>
