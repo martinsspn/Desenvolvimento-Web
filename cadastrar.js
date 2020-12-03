@@ -1,5 +1,10 @@
 const fs = require('fs');
 
+/*função para realizar o cadastro do usuário,
+verifica se o usuário já consta, logo apos isso
+se for true, retorna "Usuário já está cadastrado!"
+se for false, ele adiciona o usuário no arquivo users.json
+e cria o arquivo da lista do usuário na pasta usersFiles*/
 exports.cadastrar = function (username, password) {
     let rawdata = fs.readFileSync('users.json');
     let creds = JSON.parse(rawdata);
