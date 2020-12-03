@@ -10,6 +10,7 @@ exports.cadastrar = function (username, password) {
             return "Usuário já está cadastrado!";
         }
     }
+    fs.writeFileSync(__dirname + '/usersFiles/'+username+'.json', "{}");
     fs.writeFileSync('users.json', "{");
     fs.appendFileSync('users.json', '\n');
     for(var i = 0; i < users.length+1; i++) {
@@ -30,7 +31,6 @@ exports.cadastrar = function (username, password) {
             fs.appendFileSync('users.json', JSON.stringify(name, null, 5));
             fs.appendFileSync('users.json', '\u002C');
             fs.appendFileSync('users.json', '\n');
-            //fs.appendFileSync(__dirname + '/usersFiles/'+username+'.json', "");
         }
     }
     fs.appendFileSync('users.json', '\n');

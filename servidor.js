@@ -14,7 +14,16 @@ app.get('/', function (req, res) {
 });
 
 app.get('/toDoList', function(req, res) {
-	res.sendFile(__dirname + '/public/' + 'toDoList.html');
+	if(username === ''){
+		res.sendFile(__dirname + '/public/'+'login.html');
+	}else{
+		res.sendFile(__dirname + '/public/' + 'toDoList.html');
+	}
+});
+
+app.get('/sair', function(req, res) {
+	username = '';
+	res.send('/');
 });
 
 app.post('/login', function(req, res) {
@@ -42,8 +51,46 @@ app.post('/login', function(req, res) {
 app.get('/getUserList', function(req, res) {
 	var path = __dirname+'/usersFiles/'+username+'.json';
  	let s = fs.readFileSync(path);
- 	console.log(s);
     res.send(s);
+});
+
+app.post('/addCategoria', function(req, res) {
+	let body = '';
+	req.on('data', chunk => {
+        body += chunk.toString();
+    });
+    req.on('end', () => {
+    	body = "{\n" + body+"\n}"
+    	var isListed = false;
+    	let elt = JSON.parse(body);
+		let todos = Object.keys(elt);
+		var name = elt[todos[0]];
+		var rawdata = fs.readFileSync(__dirname+'/usersFiles/'+username+'.json');
+    	let elt2 = JSON.parse(rawdata);
+    	let savedTodos = Object.keys(elt2);
+		for(var i = 0; i < savedTodos.length; i++) {
+       		if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
+    			isListed = true;
+    			res.send("Está catégoria já existe!");
+    		}
+    	}
+    	if(!isListed){
+    		fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',\n');
+    		var aux=elt2[savedTodos[i]];
+       		if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
+       			var t = {"Nome": name["Nome"],
+       			 		 "Tarefas a fazer": name["Tarefas a fazer"],
+       					 "Tarefas em andamento": name["Tarefas em andamento"],
+       					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
+       			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+    		}
+    		res.send("Catégoria adicionada!");	
+    	}
+	});
+
 });
 
 app.post("/cadastrar", function(req, res) {
@@ -64,12 +111,6 @@ app.post("/cadastrar", function(req, res) {
     });
 });
 
-app.post("/addCategoria", function(req, res) {
-	let rawdata = fs.readFileSync('users.json');
-	console.log(req);
-	res.send("success!");
-});
-
 app.post('/atualizarList', function(req, res) {
 	let body = '';
     req.on('data', chunk => {
@@ -77,55 +118,137 @@ app.post('/atualizarList', function(req, res) {
     });
     req.on('end', () => {
     	var exist = false;
-    	body = "{\n" + body+"\n}"
+    	var keep = false;
+    	var removed = false;
+    	var inst = body.split('&');
+    	body = "{\n" + inst[0]+"\n}"
     	let elt = JSON.parse(body);
 		let todos = Object.keys(elt);
 		var name = elt[todos[0]];
 		var rawdata = fs.readFileSync(__dirname+'/usersFiles/'+username+'.json');
     	let elt2 = JSON.parse(rawdata);
     	let savedTodos = Object.keys(elt2);
-		fs.writeFileSync(__dirname+'/usersFiles/'+username+'.json', "{");
-    	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
-   		for(var i = 0; i < savedTodos.length; i++) {
-       		var aux=elt2[savedTodos[i]];
-       		if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
-       			var t = {"Nome": name["Nome"],
-       			 		 "Tarefas a fazer": name["Tarefas a fazer"],
-       					 "Tarefas em andamento": name["Tarefas em andamento"],
-       					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
-       			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
-    			exist = true;
-        	}else{
-        		var t = {"Nome": aux["Nome"],
-       			 		 "Tarefas a fazer": aux["Tarefas a fazer"],
-       					 "Tarefas em andamento": aux["Tarefas em andamento"],
-       					 "Tarefas Concluídas": aux["Tarefas Concluídas"]};
-				fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(aux["Nome"]));
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
-            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
-        	}
-        	if(i < savedTodos.length-1){
-        		fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',\n');
-        	}
-        }
-        if(!exist){
-			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',');
-			var t = {"Nome": name["Nome"],
-			 		 "Tarefas a fazer": name["Tarefas a fazer"],
-   					 "Tarefas em andamento": name["Tarefas em andamento"],
-   					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
-   			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
-        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
-        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
-        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
-    }
-        fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n}');      	
+		for(var i=0;i<savedTodos.length;i++){
+			if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
+       			if(inst[1] === "addCategoria"){
+       				result = "0";
+       				keep = true;
+       			}else if(inst[1] === "addElement"){
+       				for(var j=0;j<elt2[savedTodos[i]]["Tarefas a fazer"].length;j++){
+       					if(name["Tarefas a fazer"][0] === elt2[savedTodos[i]]["Tarefas a fazer"][j]){
+       						result = "1";
+       						keep = true;	
+       					}
+       				}
+       			}
+       		}
+		}
+		if(!keep){
+			fs.writeFileSync(__dirname+'/usersFiles/'+username+'.json', "{");
+	    	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+	   		for(var i = 0; i < savedTodos.length; i++) {
+	       		var aux=elt2[savedTodos[i]];
+	       		if(name["Nome"] === elt2[savedTodos[i]]["Nome"]){
+	       			if(inst[1] === "mvAndamento"){
+	       				for(var j=0;j<elt2[savedTodos[i]]["Tarefas a fazer"].length;j++){
+	       					if(elt2[savedTodos[i]]["Tarefas a fazer"][j] === name["Tarefas em andamento"][0]){
+	       						elt2[savedTodos[i]]["Tarefas a fazer"].splice(j,1);
+	       						break;
+	       					}
+	       				}
+	       			}else if(inst[1] === "concluir"){
+	       				for(var j=0;j<elt2[savedTodos[i]]["Tarefas em andamento"].length;j++){
+	       					if(elt2[savedTodos[i]]["Tarefas em andamento"][j] === name["Tarefas Concluídas"][0]){
+	       						elt2[savedTodos[i]]["Tarefas em andamento"].splice(j,1);
+	       						break;
+	       					}
+	       				}	
+	       			}else if(inst[1] === "refazer"){
+	       				for(var j=0;j<elt2[savedTodos[i]]["Tarefas Concluídas"].length;j++){
+	       					if(elt2[savedTodos[i]]["Tarefas Concluídas"][j] === name["Tarefas a fazer"][0]){
+	       						elt2[savedTodos[i]]["Tarefas Concluídas"].splice(j,1);
+	       						break;
+	       					}
+	       				}
+	       			}else if(inst[1] === "apagar"){
+	      				if(name["Tarefas a fazer"].length > 0){
+	      					for(var j=0;j<elt2[savedTodos[i]]["Tarefas a fazer"].length;j++){
+	      						if(elt2[savedTodos[i]]["Tarefas a fazer"][j] === name["Tarefas a fazer"][0]){
+	       							elt2[savedTodos[i]]["Tarefas a fazer"].splice(j,1);
+	       							name["Tarefas a fazer"].splice(0, 1);
+	       						}
+	      					}
+	      				}else if(name["Tarefas em andamento"].length > 0){
+	      					for(var j=0;j<elt2[savedTodos[i]]["Tarefas em andamento"].length;j++){
+	      						if(elt2[savedTodos[i]]["Tarefas em andamento"][j] === name["Tarefas em andamento"][0]){
+	       							elt2[savedTodos[i]]["Tarefas em andamento"].splice(j,1);
+	       							name["Tarefas em andamento"].splice(0, 1);
+	       						}
+	      					}
+	      				}else if(name["Tarefas Concluídas"].length > 0){
+	      					for(var j=0;j<elt2[savedTodos[i]]["Tarefas Concluídas"].length;j++){
+	      						if(elt2[savedTodos[i]]["Tarefas Concluídas"][j] === name["Tarefas Concluídas"][0]){
+	       							elt2[savedTodos[i]]["Tarefas Concluídas"].splice(j,1);
+	       							name["Tarefas Concluídas"].splice(0, 1);
+	       						}
+	      					}
+	      				}
+	       			}else if(inst[1] === "removerCategoria"){
+	   					savedTodos.splice(i, 1);
+	   					removed = true;
+	       			}
+	       			if(!removed){
+		       			for(var j=0; j<elt2[savedTodos[i]]["Tarefas a fazer"].length;j++){
+		       				name["Tarefas a fazer"].push(elt2[savedTodos[i]]["Tarefas a fazer"][j]);
+		       			}
+		       			for(var j=0; j<elt2[savedTodos[i]]["Tarefas em andamento"].length;j++){
+		       				name["Tarefas em andamento"].push(elt2[savedTodos[i]]["Tarefas em andamento"][j]);
+		       			}
+		     			for(var j=0; j<elt2[savedTodos[i]]["Tarefas Concluídas"].length;j++){
+		       				name["Tarefas Concluídas"].push(elt2[savedTodos[i]]["Tarefas Concluídas"][j]);
+		       			}
+		       			var t = {"Nome": name["Nome"],
+		       			 		 "Tarefas a fazer": name["Tarefas a fazer"],
+		       					 "Tarefas em andamento": name["Tarefas em andamento"],
+		       					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
+		       			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
+		            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+		            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+		            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+	       			}
+	       			exist = true;	       			
+	        	}else{
+	        		var t = {"Nome": aux["Nome"],
+	       			 		 "Tarefas a fazer": aux["Tarefas a fazer"],
+	       					 "Tarefas em andamento": aux["Tarefas em andamento"],
+	       					 "Tarefas Concluídas": aux["Tarefas Concluídas"]};
+					fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(aux["Nome"]));
+	            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+	            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+	            	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+	        	}
+	        	if(i < savedTodos.length-1){
+	        		fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',\n');
+	        	}
+	        }
+	        if(!exist){
+				if(savedTodos.length != 0){
+					fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', ',\n');
+				}
+				var t = {"Nome": name["Nome"],
+				 		 "Tarefas a fazer": name["Tarefas a fazer"],
+	   					 "Tarefas em andamento": name["Tarefas em andamento"],
+	   					 "Tarefas Concluídas": name["Tarefas Concluídas"]};
+	   			fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(name["Nome"]));
+	        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\u003A');
+	        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n');
+	        	fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', JSON.stringify(t, null, 5));
+	    	}
+	        fs.appendFileSync(__dirname+'/usersFiles/'+username+'.json', '\n}');
+			result = "Sucess!";
+		}
 	});
-	res.send("Sucess!");
+	res.send(result);
 });
 
 var server = app.listen(8080, function () {
